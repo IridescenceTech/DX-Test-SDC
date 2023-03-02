@@ -20,3 +20,7 @@ add_subdirectory(./ext/SDC/)
 add_executable(DXTest src/test.cpp)
 target_include_directories(DXTest PUBLIC ../include/ ../ext/glm/glm/)
 target_link_libraries(DXTest SC-Entry Stardust-Celeste)
+
+if(WIN32)
+    target_link_libraries(DXTest ws2_32 stdc++ d3d11 d3dcompiler d3dx11)
+endif()

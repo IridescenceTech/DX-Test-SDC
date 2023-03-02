@@ -12,12 +12,34 @@ class GameState : public Core::ApplicationState {
   public:
     GameState() {}
 
+    Rendering::Color color;
+    double timer;
+    int fps = 0;
+
     void on_update(Core::Application *app, double dt) {
         Utilities::Input::update();
+
+        timer += dt;
+        if(timer > 1.0f) {
+            timer = 0.0f;
+            SC_APP_INFO("FPS {}", fps);
+            fps = 0;
+        }
+
+        fps++;
     }
     void on_draw(Core::Application *app, double dt) {
+        /*
         if (sprite.get() != nullptr)
             sprite->draw();
+            */
+        color.rgba.r = 120;
+        color.rgba.g = 200;
+        color.rgba.b = 255;
+        color.rgba.a = 255;
+
+        Rendering::RenderContext::get().set_color(color);
+        Rendering::RenderContext::get().vsync = false;
     }
     void on_start() {
         /*
@@ -31,7 +53,8 @@ class GameState : public Core::ApplicationState {
         auto tex = Rendering::TextureManager::get().get_texture(tex_id);
         sprite = create_scopeptr<Graphics::G2D::Sprite>(
             tex_id, Rendering::Rectangle{{-1, -1}, {2, 2}});
-        */
+            */
+        timer = 0.0f;
     }
 
     void on_cleanup() {}
@@ -56,6 +79,7 @@ class GameApplication : public Core::Application {
 Core::Application *CreateNewSCApp() {
     Core::AppConfig config;
     config.headless = false;
+    config.render_settings.renderingApi = DX11;
 
     Core::PlatformLayer::get().initialize(config);
 
